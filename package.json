@@ -13,6 +13,8 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
+    "joi-objectid": "^3.0.1",
+    "mongoose": "^5.10.14",
     "nodemon": "^2.0.6",
     "shortid": "^2.2.16",
     "yargs": "^16.1.0"
