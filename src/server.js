@@ -3,15 +3,17 @@ const morgan = require('morgan');
 const path = require('path');
 require("dotenv").config({path: path.join(__dirname,"../.env") })
 const cors = require('cors');
+const mongoose = require('mongoose');
 const { apiRouter } = require('./router');
 
 exports.ContactsServer = class {
-  start() {
+  async start() {
     this.initServer();
     this.initMiddleWares();
     this.initRoutes();
     this.initErrors();
     this.startListening();
+    await this.initDatabase();
   }
 
   initServer() {
@@ -40,5 +42,19 @@ exports.ContactsServer = class {
     this.app.listen(PORT, () => {
       console.log('Server started listening on port', PORT);
     })
+  }
+
+  async initDatabase() {
+    try{
+      await mongoose.connect(process.env.MONGODB_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+      })
+      console.log("Database connection successful");
+    }catch(err){
+      console.log(err);
+      process.exit(1);
+    }
   }
 }
