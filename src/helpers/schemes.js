@@ -22,3 +22,18 @@ exports.updateContactSchema = Joi.object({
 exports.validateIdSchema = Joi.object({
   contactId: Joi.objectId(),
 })
+
+exports.UserSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required()
+})
+
+exports.UpdateSubUser = Joi.object({
+  subscription: Joi.string().valid("free", "pro", "premium").required()
+})
+
+exports.FiltredContacts = Joi.object({
+  sub: Joi.string().valid("free", "pro", "premium"),
+  page: Joi.string(),
+  limit: Joi.string(),
+})
