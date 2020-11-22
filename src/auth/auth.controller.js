@@ -1,17 +1,30 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const multer = require("multer");
+const fs = require("fs");
+const path = require('path');
+const { avatarGenerate } = require('../helpers/avatar-generator');
 const { Conflict, NotFound, Unauthorized } = require('../helpers/errors/Conflict');
-const { UserModel } = require('./auth.model')
+const { UserModel } = require('./auth.model');
+const { MoveFile } = require('../helpers/moveFiles');
+const { asyncWrapper } = require('../helpers/async-wrapper');
+
+// multer({dest:"public/images"});
 
 signUp = async (req, res, next) => {
-  const existing = await UserModel.findOne({email});
   const {email, password} = req.body;
+  const existing = await UserModel.findOne({email});
   if(existing){
     throw new Conflict("Email in use");
-  } 
+  }
+  const avatar = await avatarGenerate();
+  asyncWrapper(MoveFile(avatar));
   const passwordHash = await bcrypt.hash(password, +process.env.SALT_ROUNDS)
-  const user = await UserModel.create({email, passwordHash});
-  return res.status(201).send({user:{email, subscription:user.subscription}});
+
+  const user = await UserModel.create({email, passwordHash, 
+    avatarURL:`http://localhost:${process.env.PORT}/images/${avatar}`});
+
+  return res.status(201).send({user:{email, subscription:user.subscription, avatarURL:user.avatarURL}});
 }
 
 signIn = async (req, res, next) => {
