@@ -4,7 +4,9 @@ const path = require('path');
 require("dotenv").config({path: path.join(__dirname,"../.env") })
 const cors = require('cors');
 const mongoose = require('mongoose');
-const { apiRouter } = require('./router');
+const { apiRouter } = require('./contacts/contacts.router');
+const { authRouter } = require('./auth/auth.router');
+const { usersRouter } = require('./users/users.router');
 
 exports.ContactsServer = class {
   async start() {
@@ -27,7 +29,9 @@ exports.ContactsServer = class {
   }
 
   initRoutes() { 
-    this.app.use('/api/contacts', apiRouter)
+    this.app.use('/api/contacts', apiRouter),
+    this.app.use('/auth', authRouter)
+    this.app.use('/users', usersRouter)
   }
   
   initErrors() {
