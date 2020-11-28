@@ -11,7 +11,7 @@ const { asyncWrapper } = require('../helpers/async-wrapper');
 
 // multer({dest:"public/images"});
 
-signUp = async (req, res, next) => {
+exports.signUp = async (req, res, next) => {
   const {email, password} = req.body;
   const existing = await UserModel.findOne({email});
   if(existing){
@@ -27,7 +27,7 @@ signUp = async (req, res, next) => {
   return res.status(201).send({user:{email, subscription:user.subscription, avatarURL:user.avatarURL}});
 }
 
-signIn = async (req, res, next) => {
+exports.signIn = async (req, res, next) => {
   const {email, password} = req.body;
   const existing = await UserModel.findOne({email});
 
@@ -50,16 +50,10 @@ signIn = async (req, res, next) => {
   );
 }
 
-signOut = async (req, res, next) => {
+exports.signOut = async (req, res, next) => {
   const {user, token} = req;
   await UserModel.updateOne( { _id: user._id}, {
   $pull :{ tokens: token}
   })
   return res.status(204).send();
-}
-
-module.exports = {
-  signUp,
-  signIn,
-  signOut
 }
