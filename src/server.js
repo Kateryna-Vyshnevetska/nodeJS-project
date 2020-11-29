@@ -1,7 +1,7 @@
-const express = require('express');
-const morgan = require('morgan');
 const path = require('path');
 require("dotenv").config({path: path.join(__dirname,"../.env") })
+const express = require('express');
+const morgan = require('morgan');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const { apiRouter } = require('./contacts/contacts.router');

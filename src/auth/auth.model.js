@@ -7,7 +7,8 @@ const UserSchema = new Schema({
   passwordHash: {type: String, required: true},
   subscription: {type: String, enum:["free", "pro", "premium"], default:"free"},
   avatarURL: {type: String, unique: true},
-  tokens: [{type: String}]
+  tokens: [{type: String}],
+  verificationToken: {type: String}
 })
 
 exports.UserModel = mongoose.model('User', UserSchema)

@@ -1,5 +1,4 @@
 const { UserModel } = require("../auth/auth.model");
-const { asyncWrapper } = require("../helpers/async-wrapper");
 
 exports.GetCurrentUser = (req, res, next) => {
   const {email, subscription, avatarURL} = req.user;

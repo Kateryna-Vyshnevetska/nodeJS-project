@@ -1,5 +1,4 @@
 const { ContactModel } = require('./contacts.model')
-const mongoosePaginate = require('mongoose-paginate-v2');
 
 listContacts = async (req, res, next) => {
   if(Object.keys(req.query).length>=1){

@@ -12,7 +12,6 @@ exports.authorize = async (req, res, next) => {
     }catch(err){
       throw new Unauthorized('Token is not valid')
     }
-    // return res.send(payload)
     const user = await UserModel.findOne({
       _id: payload.userID,
       tokens: token,

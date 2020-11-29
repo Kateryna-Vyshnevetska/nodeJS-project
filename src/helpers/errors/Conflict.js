@@ -16,3 +16,10 @@ exports.Unauthorized = class extends Error{
     this.status = 401
   }
 }
+
+exports.Unverify = class extends Error{
+  constructor(message){
+    super(message);
+    this.status = 403
+  }
+}
