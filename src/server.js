@@ -8,6 +8,7 @@ const { apiRouter } = require('./contacts/contacts.router');
 const { authRouter } = require('./auth/auth.router');
 const { usersRouter } = require('./users/users.router');
 
+const PUBLIC_FILES_PATH = "src/public/images";
 exports.ContactsServer = class {
   async start() {
     this.initServer();
@@ -26,6 +27,7 @@ exports.ContactsServer = class {
     this.app.use(morgan("tiny"));
     this.app.use(cors());
     this.app.use(express.json());
+    this.app.use('/images', express.static(PUBLIC_FILES_PATH));
   }
 
   initRoutes() { 
