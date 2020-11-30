@@ -3,8 +3,7 @@ const multer = require("multer");
 const path = require('path')
 const { asyncWrapper } = require('../helpers/async-wrapper');
 const { authorize } = require('../helpers/auth.middleware');
-const { MoveFile } = require('../helpers/moveFiles');
-const { UpdateSubUser, UpdateAvatarUser } = require('../helpers/schemes');
+const { UpdateSubUser } = require('../helpers/schemes');
 const { validate } = require('../helpers/validate');
 const { GetCurrentUser, UpdateUserSubscription, UpdateUserAvatar } = require('./users.controller');
 

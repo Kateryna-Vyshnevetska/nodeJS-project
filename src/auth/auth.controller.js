@@ -1,15 +1,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const multer = require("multer");
-const fs = require("fs");
-const path = require('path');
+const uuid = require('uuid');
 const { avatarGenerate } = require('../helpers/avatar-generator');
-const { Conflict, NotFound, Unauthorized } = require('../helpers/errors/Conflict');
+const { Conflict, NotFound, Unauthorized, Unverify } = require('../helpers/errors/Conflict');
 const { UserModel } = require('./auth.model');
 const { MoveFile } = require('../helpers/moveFiles');
 const { asyncWrapper } = require('../helpers/async-wrapper');
-
-// multer({dest:"public/images"});
+const { mailing } = require('../helpers/mailing');
 
 exports.signUp = async (req, res, next) => {
   const {email, password} = req.body;
@@ -22,8 +19,9 @@ exports.signUp = async (req, res, next) => {
   const passwordHash = await bcrypt.hash(password, +process.env.SALT_ROUNDS)
 
   const user = await UserModel.create({email, passwordHash, 
-    avatarURL:`http://localhost:${process.env.PORT}/images/${avatar}`});
-
+    avatarURL:`${process.env.DOMAIN_ADDRESS}/images/${avatar}`,
+    verificationToken: uuid.v4()});
+    mailing.sendEmailForVarification(user);
   return res.status(201).send({user:{email, subscription:user.subscription, avatarURL:user.avatarURL}});
 }
 
@@ -33,6 +31,9 @@ exports.signIn = async (req, res, next) => {
 
   if(!existing){
     throw new NotFound('User with such email was not found')
+  }
+  if(existing.verificationToken !== null){
+    throw new Unverify('Please verify your email')
   }
   const validPassword = await bcrypt.compare(password, existing.passwordHash);
   if(!validPassword){
@@ -56,4 +57,14 @@ exports.signOut = async (req, res, next) => {
   $pull :{ tokens: token}
   })
   return res.status(204).send();
+}
+
+exports.verifyEmail = async( req, res, next) => {
+  const {verificationToken} = req.params;
+  const user = await UserModel.findOne({verificationToken}) 
+  if(!user){
+    throw new NotFound('User not found or email is already varifed');
+  }
+  await UserModel.updateOne({_id: user._id}, {verificationToken: null})
+  res.status(200).send('Varification was successful');
 }

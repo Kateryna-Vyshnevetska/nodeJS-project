@@ -10,6 +10,6 @@ exports.avatarGenerate = () => {
     ), 32), 8),
     128, 128);
       const name = Date.now()
-avatar.create(`${name}`).then(buffer => fs.writeFileSync(`src/tmp/${name}.png`, buffer));
-return `${name}.png`
+  avatar.create(`${name}`).then(buffer => fs.writeFileSync(`src/tmp/${name}.png`, buffer));
+  return `${name}.png`
 }
